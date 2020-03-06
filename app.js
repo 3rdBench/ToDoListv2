@@ -66,7 +66,6 @@ app.get("/", function(req, res) {
 
 // Add a new item to the 'Today' list
 app.post("/", function(req, res){
-
   // Save list item submitted by the user
   const itemName = req.body.newItem;
 
@@ -78,7 +77,18 @@ app.post("/", function(req, res){
   // Save item & redirects back to 'Today' list page
   item.save();
   res.redirect("/");
+});
 
+// Delete selected list item by it's _id
+app.post("/delete", function(req, res){
+  const checkedItemId = req.body.checkbox;
+
+  Item.findByIdAndRemove(checkedItemId, function(err){
+    if (!err){
+      console.log("Successfully deleted item from database.");
+      res.redirect("/");
+    }
+  });
 });
 
 app.get("/work", function(req,res){
