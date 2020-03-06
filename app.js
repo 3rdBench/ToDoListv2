@@ -28,7 +28,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 
 app.get("/", function(req, res) {
-  res.render("list", {listTitle: day, newListItems: items});
+  res.render("list", {listTitle: "Today", newListItems: items});
 });
 
 app.post("/", function(req, res){
