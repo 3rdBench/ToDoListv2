@@ -13,6 +13,14 @@ mongoose.set('useUnifiedTopology', true);
 // Connect to local MongoDB database
 mongoose.connect("mongodb://localhost:27017/todolistDB");
 
+// Schema for list items
+const itemSchema = new mongoose.Schema({
+  name: String
+});
+
+// Model for defined schema itemSchema
+const Item = mongoose.model("Item", itemSchema);
+
 
 const date = require(__dirname + "/date.js");
 
