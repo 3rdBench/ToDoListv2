@@ -43,6 +43,14 @@ const item3 = new Item({
 // Store default item list into the following array
 const defaultItems = [item1, item2, item3];
 
+Item.insertMany(defaultItems, function(err){
+  if(err) {
+    console.log(err);
+  } else {
+    console.log("Successfully saved items in database.");
+  }
+});
+
 app.get("/", function(req, res) {
   res.render("list", {listTitle: "Today", newListItems: items});
 });
