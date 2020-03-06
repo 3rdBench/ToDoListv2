@@ -43,20 +43,25 @@ const item3 = new Item({
 // Store default item list into the following array
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems, function(err){
-  if(err) {
-    console.log(err);
-  } else {
-    console.log("Successfully saved items in database.");
-  }
-});
-
 app.get("/", function(req, res) {
   // Retrieve default items from database
   Item.find({}, function(err, foundItems){
-    res.render("list", {listTitle: "Today", newListItems: foundItems});
+    // Check if default list items have already been saved
+    if (foundItems.length === 0){
+      Item.insertMany(defaultItems, function(err){
+        if (err) {
+          console.log(err);
+        } else {
+          // Save default items to database & redirect back to root route
+          console.log("Successfully saved items in database.");
+          res.redirect("/");
+        }
+      });
+    } else{
+      // Just render the default items on 'Today' list
+      res.render("list", {listTitle: "Today", newListItems: foundItems});
+    }
   });
-
 });
 
 app.post("/", function(req, res){
