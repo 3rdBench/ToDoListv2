@@ -27,7 +27,7 @@ const itemSchema = new mongoose.Schema({
 // Model for defined schema itemSchema
 const Item = mongoose.model("Item", itemSchema);
 
-// Default list item (i.e. documents)
+// Corresonding documents for default list items
 const item1 = new Item({
   name: "Welcome to your ToDoList!"
 });
@@ -40,8 +40,21 @@ const item3 = new Item({
   name: "<== Click to delete an item."
 });
 
-// Store default item list into the following array
+// Default list items
 const defaultItems = [item1, item2, item3];
+
+
+// Schema for custom list
+const listSchema = mongoose.Schema({
+  // Name of custom list
+  name: String,
+  // Array of list items associated to the custom list name
+  items: [itemSchema]
+});
+
+// Model for custom list
+const List = mongoose.model("List", listSchema);
+
 
 app.get("/", function(req, res) {
   // Retrieve default items from database
@@ -64,19 +77,61 @@ app.get("/", function(req, res) {
   });
 });
 
-// Add a new item to the 'Today' list
+
+// Dynamic app.get() route for custom list
+app.get("/:customListName", function(req, res){
+  const customListName = req.params.customListName;
+
+  // Checks if custom list name already exists
+  List.findOne({name: customListName}, function(err, foundList){
+    if (!err) {
+      if (!foundList) {
+        // Create a new custom list with default items
+        const list = new List({
+          name: customListName,
+          items: defaultItems
+        });
+
+        list.save();
+        res.redirect("/" + customListName);
+      } else {
+        // Render an existing custom list
+        res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
+      }
+    }
+  });
+
+});
+
+
+// Adds a new item to a list
 app.post("/", function(req, res){
   // Save list item submitted by the user
   const itemName = req.body.newItem;
 
-  // Corresponding document to save item list into the database
+  // Save name of active list
+  const listName = req.body.list;
+
+  // Corresponding document for the list item
   const item = new Item({
     name: itemName
   });
 
-  // Save item & redirects back to 'Today' list page
-  item.save();
-  res.redirect("/");
+  // Checks to which list the submitted item will be added to
+  if (listName === "Today"){
+    // Save list item to database & redirect to 'Today' page
+    item.save();
+    res.redirect("/");
+  } else {
+    // Search for custom list from the database
+    List.findOne({name: listName}, function(err, foundList){
+      // Add the list item, save to database & redirect to custom list page
+      foundList.items.push(item);
+      foundList.save();
+      res.redirect("/" + listName);
+    });
+  }
+
 });
 
 // Delete selected list item by it's _id
@@ -89,10 +144,6 @@ app.post("/delete", function(req, res){
       res.redirect("/");
     }
   });
-});
-
-app.get("/work", function(req,res){
-  res.render("list", {listTitle: "Work List", newListItems: workItems});
 });
 
 app.get("/about", function(req, res){
