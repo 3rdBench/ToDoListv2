@@ -2,6 +2,18 @@
 
 const express = require("express");
 const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+
+// Address Mongoose deprecation warnings
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useFindAndModify', false);
+mongoose.set('useCreateIndex', true);
+mongoose.set('useUnifiedTopology', true);
+
+// Connect to local MongoDB database
+mongoose.connect("mongodb://localhost:27017/todolistDB");
+
+
 const date = require(__dirname + "/date.js");
 
 const app = express();
