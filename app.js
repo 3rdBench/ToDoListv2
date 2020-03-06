@@ -137,13 +137,29 @@ app.post("/", function(req, res){
 // Delete selected list item by it's _id
 app.post("/delete", function(req, res){
   const checkedItemId = req.body.checkbox;
+  const listName = req.body.listName;
 
-  Item.findByIdAndRemove(checkedItemId, function(err){
-    if (!err){
-      console.log("Successfully deleted item from database.");
-      res.redirect("/");
-    }
-  });
+  // Checks which list the selected item will be delete from
+  if (listName === "Today") {
+    Item.findByIdAndRemove(checkedItemId, function(err){
+      if (!err){
+        console.log("Successfully deleted item from database.");
+        res.redirect("/");
+      }
+    });
+  } else {
+    // Search for custom list item from the database
+    List.findOneAndUpdate(
+      {name: listName},
+      {$pull: {items: {_id: checkedItemId}}},
+      function(err, foundList){
+        if (!err) {
+          res.redirect("/" + listName);
+        }
+    });
+
+  }
+
 });
 
 app.get("/about", function(req, res){
