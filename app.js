@@ -4,6 +4,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 
+const app = express();
+
+app.set('view engine', 'ejs');
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+
 // Address Mongoose deprecation warnings
 mongoose.set('useNewUrlParser', true);
 mongoose.set('useFindAndModify', false);
@@ -21,11 +27,21 @@ const itemSchema = new mongoose.Schema({
 // Model for defined schema itemSchema
 const Item = mongoose.model("Item", itemSchema);
 
-const app = express();
+// Default list item (i.e. documents)
+const item1 = new Item({
+  name: "Welcome to your ToDoList!"
+});
 
-app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static("public"));
+const item2 = new Item({
+  name: "Click the + button to add a new item."
+});
+
+const item3 = new Item({
+  name: "<== Click to delete an item."
+});
+
+// Store default item list into the following array
+const defaultItems = [item1, item2, item3];
 
 app.get("/", function(req, res) {
   res.render("list", {listTitle: "Today", newListItems: items});
