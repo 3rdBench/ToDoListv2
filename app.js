@@ -17,18 +17,21 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
-// Connect to local MongoDB database
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+// Connect to local MongoDB database (*** remove comment below when intended to run locally ***)
+// mongoose.connect("mongodb://localhost:27017/todolistDB");
 
-// Schema for list items
+// Connect to MongoDB Atlas cluster
+mongoose.connect("mongodb+srv://admin-benjie:test1234@cluster0-fxsru.mongodb.net/todolistDB");
+
+// Schema for list items for default list (i.e. Today)
 const itemSchema = new mongoose.Schema({
   name: String
 });
 
-// Model for defined schema itemSchema
+// Model for schema itemSchema
 const Item = mongoose.model("Item", itemSchema);
 
-// Corresonding documents for default list items
+// Document to the model Item; assigned with 3 initial list items
 const item1 = new Item({
   name: "Welcome to your ToDoList!"
 });
@@ -41,11 +44,10 @@ const item3 = new Item({
   name: "<== Click to delete an item."
 });
 
-// Default list items
 const defaultItems = [item1, item2, item3];
 
 
-// Schema for custom list
+// Schema for custom | user-defined list
 const listSchema = mongoose.Schema({
   // Name of custom list
   name: String,
@@ -53,10 +55,10 @@ const listSchema = mongoose.Schema({
   items: [itemSchema]
 });
 
-// Model for custom list
+// Model for schema listSchema
 const List = mongoose.model("List", listSchema);
 
-
+// Default list 'home' route (i.e. Today)
 app.get("/", function(req, res) {
   // Retrieve default items from database
   Item.find({}, function(err, foundItems){
@@ -79,15 +81,15 @@ app.get("/", function(req, res) {
 });
 
 
-// Dynamic app.get() route for custom list
+// Custom list 'home' route
 app.get("/:customListName", function(req, res){
   const customListName = _.capitalize(req.params.customListName);
 
-  // Checks if custom list name already exists
+  // Check if name of custom list already exists
   List.findOne({name: customListName}, function(err, foundList){
     if (!err) {
       if (!foundList) {
-        // Create a new custom list with default items
+        // Creat custom list & assign 3 initial documents (i.e. defaultItems array)
         const list = new List({
           name: customListName,
           items: defaultItems
@@ -96,7 +98,7 @@ app.get("/:customListName", function(req, res){
         list.save();
         res.redirect("/" + customListName);
       } else {
-        // Render an existing custom list
+        // Render custom list items
         res.render("list", {listTitle: foundList.name, newListItems: foundList.items});
       }
     }
@@ -105,7 +107,7 @@ app.get("/:customListName", function(req, res){
 });
 
 
-// Adds a new item to a list
+// Add a new item to the list
 app.post("/", function(req, res){
   // Save list item submitted by the user
   const itemName = req.body.newItem;
@@ -118,15 +120,15 @@ app.post("/", function(req, res){
     name: itemName
   });
 
-  // Checks to which list the submitted item will be added to
+  // Check which list the submitted item will be added to
   if (listName === "Today"){
-    // Save list item to database & redirect to 'Today' page
+    // Save list item & render the 'Today' list
     item.save();
     res.redirect("/");
   } else {
     // Search for custom list from the database
     List.findOne({name: listName}, function(err, foundList){
-      // Add the list item, save to database & redirect to custom list page
+      // Save list item & render custom list
       foundList.items.push(item);
       foundList.save();
       res.redirect("/" + listName);
@@ -135,12 +137,12 @@ app.post("/", function(req, res){
 
 });
 
-// Delete selected list item by it's _id
+// Delete list item (identified by the document's _id field)
 app.post("/delete", function(req, res){
   const checkedItemId = req.body.checkbox;
   const listName = req.body.listName;
 
-  // Checks which list the selected item will be delete from
+  // Remove list item from the 'Today' list
   if (listName === "Today") {
     Item.findByIdAndRemove(checkedItemId, function(err){
       if (!err){
@@ -149,7 +151,7 @@ app.post("/delete", function(req, res){
       }
     });
   } else {
-    // Search for custom list item from the database
+    // Remove list item from custom list
     List.findOneAndUpdate(
       {name: listName},
       {$pull: {items: {_id: checkedItemId}}},
@@ -163,10 +165,19 @@ app.post("/delete", function(req, res){
 
 });
 
+// Render the web app's 'About' page
 app.get("/about", function(req, res){
   res.render("about");
 });
 
-app.listen(3000, function() {
-  console.log("Server started on port 3000");
+
+// Assign port number that will allow the app to run locally or remotely (Heroku)
+let port = process.env.PORT;
+
+if (port == null || port == ""){
+  port = 3000;
+}
+
+app.listen(port, function() {
+  console.log("Server started successfully.");
 });
