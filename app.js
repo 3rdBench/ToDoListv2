@@ -21,7 +21,7 @@ mongoose.set('useUnifiedTopology', true);
 // mongoose.connect("mongodb://localhost:27017/todolistDB");
 
 // Connect to MongoDB Atlas cluster
-mongoose.connect("mongodb+srv://admin-benjie:test1234@cluster0-fxsru.mongodb.net/todolistDB");
+mongoose.connect("mongodb+srv://<username>:<password>@cluster0-fxsru.mongodb.net/todolistDB");
 
 // Schema for list items for default list (i.e. Today)
 const itemSchema = new mongoose.Schema({
@@ -47,11 +47,11 @@ const item3 = new Item({
 const defaultItems = [item1, item2, item3];
 
 
-// Schema for custom | user-defined list
+// Schema for custom list
 const listSchema = mongoose.Schema({
   // Name of custom list
   name: String,
-  // Array of list items associated to the custom list name
+  // Array of list items associated to the custom list
   items: [itemSchema]
 });
 
