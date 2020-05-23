@@ -18,11 +18,10 @@ mongoose.set('useCreateIndex', true);
 mongoose.set('useUnifiedTopology', true);
 
 // Connect to local MongoDB database (*** remove comment below when intended to run locally ***)
-// mongoose.connect("mongodb://localhost:27017/todolistDB");
+mongoose.connect("mongodb://localhost:27017/todolistDB");
 
 // Connect to MongoDB Atlas cluster
-mongoose.connect(
-  "mongodb+srv://" + process.env.MONGODB_USER_ACCT + ":" + process.env.MONGODB_USER_PSWD +"@cluster0-fxsru.mongodb.net/todolistDB");
+// mongoose.connect("mongodb+srv://admin-benjie:test1234@cluster0-fxsru.mongodb.net/todolistDB");
 
 // Schema for list items for default list (i.e. Today)
 const itemSchema = new mongoose.Schema({
