@@ -27,7 +27,6 @@ To delete an existing list item, click the checkbox located on the left-hand sid
 
 To define your own Custom list, append the name of the custom list at the end of the URL:
 
->>>>>>> 3ab5cc8431df44452d274aab4a19a5fd1fdee507
 https://sleepy-brook-15936.herokuapp.com/<custom_listname>
 
 ## Built With
