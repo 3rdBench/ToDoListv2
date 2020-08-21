@@ -6,7 +6,6 @@ Taken from Udemy's "The Complete 2020 Web Development Bootcamp" by Dr. Angela Yu
 
 ### What does it do?
 
-<<<<<<< HEAD
 Allows a user to add & delete a To Do List items on the default list (Today) list along with 3 pre-defined items.
 
 ### How does it works?
