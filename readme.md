@@ -39,6 +39,5 @@ https://sleepy-brook-15936.herokuapp.com/<custom_listname>
 
 ## Heroku Deployment
 
-https://protected-beyond-77555.herokuapp.com (deprecated; accidentally deleted)
 https://sleepy-brook-15936.herokuapp.com/ (current)
 
