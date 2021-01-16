@@ -1,6 +1,6 @@
 ## ToDoList
 
-A minimalist ToDoList that exploress Express, HTTP GET and POST routing.
+A minimalist ToDoList that explores Express, HTTP GET and POST routing.
 
 Taken from Udemy's "The Complete 2020 Web Development Bootcamp" by Dr. Angela Yu.
 
@@ -15,7 +15,7 @@ To add a new item, type the activity on the New Item field & click the + button.
 To delete an existing item, click the checkbox located on the left-hand side of the list item.
 
 To add / create a Custom list, append the name of the custom list at the end of the URL:
-=======
+
 Allows a user to add & delete list items from a default To Do List (Today) in addition to the other 3 pre-defined items.
 
 ### How does it works?
